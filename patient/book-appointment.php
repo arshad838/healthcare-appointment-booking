@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
         $stmt->execute([$patientId, $doctorId, $date, $time, $reason]);
         
-        $_SESSION['success_msg'] = "Your consultation slot has been booked and is currently pending administrator review.";
+        $_SESSION['success_msg'] = "Your consultation slot has been booked successfully and is currently pending administrator review.";
         header("Location: appointments.php");
         exit();
         
