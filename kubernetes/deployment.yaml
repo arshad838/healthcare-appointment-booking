@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caresync-db
+  labels:
+    app: caresync
+    tier: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: caresync
+      tier: db
+  template:
+    metadata:
+      labels:
+        app: caresync
+        tier: db
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          args: ["--default-authentication-plugin=mysql_native_password"]
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: caresync-config
+                  key: DB_HOST
+                  # Custom logic fallback to get DB_NAME
+            - name: MYSQL_DATABASE
+              value: "healthcare_booking"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: caresync-secret
+                  key: MYSQL_ROOT_PASSWORD
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: caresync-web
+  labels:
+    app: caresync
+    tier: web
+spec:
+  replicas: 2 # Double redundancy to demonstrate load balancing
+  selector:
+    matchLabels:
+      app: caresync
+      tier: web
+  template:
+    metadata:
+      labels:
+        app: caresync
+        tier: web
+    spec:
+      containers:
+        - name: php-web
+          image: my-docker-hub-username/caresync-web:latest # Replace with real image tag in production
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: http
+          env:
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: caresync-config
+                  key: DB_HOST
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: caresync-config
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: caresync-config
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: caresync-secret
+                  key: DB_PASSWORD
+          # Kubernetes Health Checks
+          livenessProbe:
+            httpGet:
+              path: /index.php
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /index.php
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+            requests:
+              cpu: "150m"
+              memory: "128Mi"

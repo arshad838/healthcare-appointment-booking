@@ -1,0 +1,249 @@
+/* assets/css/style.css */
+/* CareSync Application Stylesheet */
+
+/* Design Tokens & Theme Variables */
+:root {
+    --dark-blue: #0f172a;        /* Sleek slate dark blue */
+    --medical-blue: #0284c7;     /* Professional medical blue */
+    --medical-light: #e0f2fe;    /* Light medical highlights */
+    --body-bg: #f8fafc;          /* Smooth neutral white-grey background */
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+}
+
+/* Base Styles */
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-dark);
+    background-color: var(--body-bg) !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Headings */
+.font-outfit, h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Custom Color Utilities */
+.bg-dark-blue {
+    background-color: var(--dark-blue) !important;
+}
+
+.text-medical-blue {
+    color: var(--medical-blue) !important;
+}
+
+.bg-medical-blue {
+    background-color: var(--medical-blue) !important;
+}
+
+.bg-medical-light {
+    background-color: var(--medical-light) !important;
+}
+
+.btn-medical-blue {
+    background-color: var(--medical-blue);
+    border-color: var(--medical-blue);
+    color: #fff;
+}
+.btn-medical-blue:hover, .btn-medical-blue:focus {
+    background-color: #0369a1;
+    border-color: #0369a1;
+    color: #fff;
+}
+
+.hover-medical-blue:hover {
+    color: var(--medical-blue) !important;
+}
+
+/* Tracking / Letter-spacing */
+.tracking-tight {
+    letter-spacing: -0.025em;
+}
+.tracking-wider {
+    letter-spacing: 0.05em;
+}
+
+/* Font Size Utility */
+.fs-8 { font-size: 0.85rem !important; }
+.fs-9 { font-size: 0.75rem !important; }
+
+/* Navigation Bar */
+.navbar-brand span {
+    font-size: 1.4rem;
+}
+.navbar {
+    z-index: 1030;
+}
+
+/* Dashboard Layout */
+main {
+    min-height: 80vh;
+}
+
+/* Sidebar Custom Styling */
+.sidebar {
+    position: fixed;
+    top: 56px;
+    bottom: 0;
+    left: 0;
+    z-index: 100; /* Behind navbar */
+    padding: 48px 0 0; /* Height of navbar */
+    box-shadow: inset -1px 0 0 var(--border-color);
+}
+
+@media (max-width: 767.98px) {
+    .sidebar {
+        top: 115px;
+        padding-top: 0;
+        position: static;
+        width: 100%;
+        box-shadow: none;
+    }
+}
+
+.sidebar-sticky {
+    height: calc(100vh - 56px);
+    overflow-x: hidden;
+    overflow-y: auto; /* Scrollable contents if viewport is short */
+    padding-top: 1rem;
+}
+
+.sidebar .nav-link {
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--medical-blue);
+    background-color: var(--body-bg);
+}
+
+.sidebar .nav-link.active {
+    color: var(--medical-blue) !important;
+    background-color: var(--medical-light) !important;
+    font-weight: 600;
+}
+
+.sidebar .nav-link.active i {
+    color: var(--medical-blue) !important;
+}
+
+/* Dashboard Cards */
+.card-metric {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-metric:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Landing Page Custom Elements */
+.hero-section {
+    background: linear-gradient(135deg, var(--dark-blue) 0%, #1e293b 100%);
+    position: relative;
+    overflow: hidden;
+}
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(2,132,199,0.15) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.card-feature {
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-feature:hover {
+    border-color: var(--medical-blue);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 20px -3px rgba(2, 132, 199, 0.08);
+}
+
+.doctor-badge-avatar {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--medical-light);
+}
+
+.doctor-card-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid var(--medical-light);
+}
+
+/* Slots Grid styling */
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+}
+
+.slot-radio {
+    display: none;
+}
+
+.slot-label {
+    display: block;
+    text-align: center;
+    padding: 10px 8px;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.slot-label:hover {
+    border-color: var(--medical-blue);
+    background-color: var(--medical-light);
+}
+
+.slot-radio:checked + .slot-label {
+    background-color: var(--medical-blue);
+    border-color: var(--medical-blue);
+    color: #fff;
+}
+
+.slot-radio[disabled] + .slot-label,
+.slot-radio.booked + .slot-label {
+    background-color: #e2e8f0;
+    color: #94a3b8;
+    border-color: #cbd5e1;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+/* Profile Form styling */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    color: var(--medical-blue);
+}
+
+.form-control:focus {
+    border-color: var(--medical-blue);
+    box-shadow: 0 0 0 0.25rem rgba(2, 132, 199, 0.25);
+}
+
+/* Footer alignment */
+footer a:hover {
+    color: var(--medical-blue) !important;
+}

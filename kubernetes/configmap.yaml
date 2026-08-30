@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caresync-config
+  labels:
+    app: caresync
+data:
+  DB_HOST: "db" # Points to the mysql Kubernetes service name 'db'
+  DB_NAME: "healthcare_booking"
+  DB_USER: "root"

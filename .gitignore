@@ -1,0 +1,29 @@
+# Git Excludes for CareSync project
+# Ignore environment and local secret overrides
+.env
+.env.local
+.env.*.local
+
+# Ignore Composer lock if generated
+composer.lock
+
+# Ignore Docker Compose local overrides
+docker-compose.override.yml
+
+# IDE and System Directories
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Ignore logs and uploads
+logs/
+*.log
+uploads/

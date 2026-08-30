@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # Web application container running PHP 8.3 + Apache
+  web:
+    build: .
+    container_name: caresync_web
+    ports:
+      - "8080:80"
+    environment:
+      # Inject database parameters dynamically as environment variables
+      - DB_HOST=db
+      - DB_NAME=healthcare_booking
+      - DB_USER=root
+      - DB_PASSWORD=secretpassword
+    depends_on:
+      - db
+    restart: always
+
+  # Database container running MySQL 8.0
+  db:
+    image: mysql:8.0
+    container_name: caresync_db
+    # Force native password plugin for seamless PHP 8 PDO authentication compatibility
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secretpassword
+      - MYSQL_DATABASE=healthcare_booking
+    volumes:
+      # Seed schema and sample clinic records automatically on container startup
+      - ./database/healthcare_booking.sql:/docker-entrypoint-initdb.d/healthcare_booking.sql
+    restart: always
