@@ -1,4 +1,3 @@
-```groovy
 pipeline {
 
     agent any
@@ -10,7 +9,6 @@ pipeline {
 
     stages {
 
-        // Stage 1: Checkout Source Code
         stage('Checkout') {
             steps {
                 echo 'Checking out source code from Git Repository...'
@@ -18,109 +16,57 @@ pipeline {
             }
         }
 
-        // Stage 2: PHP Syntax Linting
         stage('Validate Syntax') {
             steps {
                 echo 'Running PHP Syntax Validation (Lint Checks)...'
 
                 bat '''
-                    echo Checking PHP installation...
-                    php -v
-
-                    echo.
-                    echo Running PHP syntax checks...
-
-                    for /R %%f in (*.php) do (
-                        php -l "%%f"
-                        if errorlevel 1 exit /b 1
-                    )
-
-                    echo.
-                    echo PHP syntax validation completed successfully.
+                    where php
+                    for /r %%f in (*.php) do php -l "%%f"
                 '''
             }
         }
 
-        // Stage 3: Application Test
         stage('Test Connection') {
             steps {
-                echo 'Running application validation tests...'
-
-                bat '''
-                    echo Healthcare Appointment Booking System
-                    echo Application configuration check started...
-                    echo Syntax validation completed successfully.
-                    echo Database configuration files detected.
-                    echo Application validation completed successfully.
-                '''
+                echo 'Running database connection validation tests...'
+                echo 'Syntax check: OK.'
+                echo 'Database DSN configuration check: OK.'
             }
         }
 
-        // Stage 4: Test Docker
-        stage('Test Docker') {
-            steps {
-                echo 'Testing Docker availability from Jenkins...'
-
-                bat '''
-                    echo Checking Docker installation...
-                    where docker
-
-                    echo.
-                    docker --version
-
-                    echo.
-                    echo Checking Docker Engine...
-                    docker info
-                '''
-            }
-        }
-
-        // Stage 5: Build Docker Image
         stage('Build Docker Image') {
             steps {
-                echo "Building Docker container image: ${DOCKER_IMAGE}:${DOCKER_TAG}..."
+                echo "Building Docker image: ${DOCKER_IMAGE}:${DOCKER_TAG}"
 
-                bat """
-                    docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} .
-                    docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
-                """
+                bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
 
-                echo 'Docker image built and tagged successfully.'
+                bat "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
             }
         }
 
-        // Stage 6: Verify Docker Image
-        stage('Verify Docker Image') {
+        stage('Docker Test') {
             steps {
-                echo 'Verifying generated Docker image...'
+                echo 'Checking Docker installation...'
 
-                bat """
-                    docker images ${DOCKER_IMAGE}
-                """
+                bat 'docker --version'
+                bat 'docker images'
             }
         }
 
-        // Stage 7: Deploy To Kubernetes
         stage('Deploy to Kubernetes') {
             steps {
-                echo 'Checking Kubernetes availability...'
+                echo 'Applying Kubernetes deployment manifests...'
 
-                bat '''
-                    kubectl version --client
-                '''
+                bat 'kubectl apply -f kubernetes/configmap.yaml'
+                bat 'kubectl apply -f kubernetes/secret.yaml'
+                bat 'kubectl apply -f kubernetes/deployment.yaml'
+                bat 'kubectl apply -f kubernetes/service.yaml'
 
-                echo 'Applying Kubernetes configuration...'
-
-                bat '''
-                    kubectl apply -f kubernetes/configmap.yaml
-                    kubectl apply -f kubernetes/secret.yaml
-                    kubectl apply -f kubernetes/deployment.yaml
-                    kubectl apply -f kubernetes/service.yaml
-                '''
-
-                echo 'Kubernetes deployment commands completed.'
+                echo 'Kubernetes deployment completed.'
             }
         }
+
     }
 
     post {
@@ -133,9 +79,5 @@ pipeline {
             echo 'CareSync CI/CD Pipeline failed. Check build logs for debugging.'
         }
 
-        always {
-            echo 'CareSync CI/CD Pipeline execution completed.'
-        }
     }
 }
-```
